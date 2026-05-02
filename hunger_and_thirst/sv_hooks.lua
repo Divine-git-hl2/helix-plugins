@@ -1,6 +1,13 @@
 local PLUGIN = PLUGIN
 local charMeta = ix.meta.character
 
+local cachedDamage
+local cachedCauseDeath
+local cachedMinHealth
+local cachedNourishmentLoss
+local cachedThirstLoss
+local cachedEnabled
+
 local function RefreshConfigCache()
     cachedDamage = ix.config.Get("hungerAndThirstDamage", 2)
     cachedCauseDeath = ix.config.Get("causeDeath", false)
