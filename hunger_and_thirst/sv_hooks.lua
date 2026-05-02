@@ -7,6 +7,7 @@ local function RefreshConfigCache()
     cachedMinHealth = ix.config.Get("hungerAndThirstMinHealth", 10)
     cachedNourishmentLoss = ix.config.Get("nourishmentLossAmount", 1)
     cachedThirstLoss = ix.config.Get("thirstLossAmount", 1)
+    cachedEnabled = ix.config.Get("hungerAndThirstEnabled", false)
 end
 
 RefreshConfigCache()
@@ -50,6 +51,7 @@ function charMeta:AddThirst(amount)
 end
 
 function PLUGIN:SetupTimers(client, character)
+    if (!cachedEnabled) then return end
     local steamID = client:SteamID64()
 
     timer.Remove("ixHunger_" .. steamID)
@@ -99,6 +101,7 @@ function PLUGIN:PlayerLoadedCharacter(client, character)
 end
 
 function PLUGIN:HungerAndThirstEnabled()
+    RefreshConfigCache()
     self:SetupAllTimers()
 end
 
@@ -111,6 +114,7 @@ function PLUGIN:HungerAndThirstConfigUpdated()
 end
 
 function PLUGIN:HungerAndThirstDisabled()
+    RefreshConfigCache()
     self:RemoveAllTimers()
 end
 
@@ -138,6 +142,7 @@ local function ApplyDamageIfPossible(client, currentValue)
 end
 
 function PLUGIN:HungerTick(client, character)
+    if (!cachedEnabled) then return end
     if (!client:Alive() or client:GetMoveType() == MOVETYPE_NOCLIP) then return end
 
     character:AddHunger(-cachedNourishmentLoss)
@@ -145,6 +150,7 @@ function PLUGIN:HungerTick(client, character)
 end
 
 function PLUGIN:ThirstTick(client, character)
+    if (!cachedEnabled) then return end
     if (!client:Alive() or client:GetMoveType() == MOVETYPE_NOCLIP) then return end
 
     character:AddThirst(-cachedThirstLoss)
